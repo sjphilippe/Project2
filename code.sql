@@ -2,7 +2,7 @@
 WITH table1 AS (SELECT
 region, date,
 sum(total_vol) OVER 
-			(PARTITION BY date ORDER BY region) AS sumavo
+	(PARTITION BY date ORDER BY region) AS sumavo
 FROM florida_avo
 WHERE region IN ('Miami', 'Tampa') AND
 year = '2019') -- can change date
@@ -32,7 +32,7 @@ FROM florida_avo)
 SELECT 
 region, sum(total_vol), year, quart
 FROM table1
-WHERE (type ='organic' or type = 'cONventiONal') AND quart = '1' -- change quarter to 1,2,3 or 4
+WHERE (type ='organic' or type = 'conventional') AND quart = '1' -- change quarter to 1,2,3 or 4
 GROUP BY region, year, quart
 
 -- What weeks were avo prices above/below the us average 
@@ -49,7 +49,7 @@ JOIN table1 AS t1
 ON t1.date = fa.date
 	AND t1.type = fa.type
 WHERE 
-	-- t1.type = 'organic' AND --> filter by type of avo(organic/cONventiONal)
+	-- t1.type = 'organic' AND --> filter by type of avo(organic/conventional)
 	region != 'TotalUS' AND -- excludes total us AS region value 
 	region = 'Tampa' AND -->filter by region(s). exlude to show all. 
 	 year BETWEEN '2019' AND '2021'
@@ -78,7 +78,7 @@ WHERE
 	year BETWEEN '2019' AND '2021' --> filter by year here
 ORDER BY fa.date, fa.region)
 
-SELECT distinct region, year, count(priveabove)/2 AS timesabove_usavg, --> count()/2 because query counts organic & cONventiONal prices AS seperate weeks.
+SELECT distinct region, year, count(priveabove)/2 AS timesabove_usavg, --> count()/2 because query counts organic & conventional prices AS seperate weeks.
 	count(pricebelow)/2 AS timesbelow_usavg,
 	count(sameprice)/2 AS timesmatching_usavg
 FROM table2 
@@ -90,7 +90,7 @@ ORDER BY year
 WITH chart1 AS (SELECT
 region, date,
 sum(total_vol) OVER 
-			(PARTITION BY date ORDER BY region) AS sumavo
+	(PARTITION BY date ORDER BY region) AS sumavo
 FROM florida_avo
 WHERE region = 'TotalUS')
 
